@@ -1,0 +1,52 @@
+time_to_collect= int(input("how long(s) is this data collection"))
+
+save_to_file(f'csv_filename{i}', time_to_collect):
+    try:
+        with open(csv_filename, mode='a', newline='') as file:
+            writer = csv.writer(file) #create writer object to write in the lines of CSV file
+
+            if file.tell() == 0:
+                writer.writerow(["Timestamp", "Serial Data"])
+
+            print("Recording data ... press Ctrl + C to stop")
+            first_timestamp = 0
+        
+            while True:
+                try:
+                    serial_line = arduino.readline().decode('utf-8').strip()
+                    if serial_line : #only log non-empty lines
+                        timestamp = time.time() #time stamp in day month year, hour minute second
+                        if not first_timestamp:
+                            first_timestamp = timestamp
+                        zeroed_timestamp = timestamp - first_timestamp
+                        writer.writerow([zeroed_timestamp, serial_line]) #using writer object to begin writing data in new, empty lines
+                        file.flush() #data written immediately
+                        print(f"{zeroed_timestamp}-->{serial_line}") #prints for the user to see exactly what was printed in the CSV
+                except UnicodeDecodeError:
+                    print("Received undecodeable data") #if theres data that python cant understand we see ths error
+
+    except KeyboardInterrupt:
+        print("\nStopped by User")
+
+    except IOError:
+        print(f"File write error: {e}")
+
+    finally:
+        arduino.close()
+        print("Serial connection closed")
+
+#the same input for the function should be the input needed for user input
+
+csv_filename= input("what is the name of this distance")
+time_to_collect= int(input("how long(s) is this data collection"))
+
+
+if __name__ == '__main__':
+  save_to_file(csv_filename.csv), time_to_collect
+
+#does the input function go in the defined part of the code or the main part?
+
+
+#for i in range(5):
+#     data[f"variable_{i}"] = i * 10
+#print(data["variable_2"]) 
